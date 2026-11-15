@@ -1,0 +1,72 @@
+{
+  "name": "dsh-comsol",
+  "version": "0.2.0",
+  "description": "COMSOL Multiphysics 6.4 automation for dsh: detects the installed COMSOL and the MPh/JPype interpreter first, then registers one stdio MCP server that builds geometry, wires multiphysics, meshes, solves and post-processes .mph models.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "dsh-comsol contributors"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "mcp",
+    "comsol",
+    "multiphysics",
+    "mph",
+    "jpype",
+    "fem",
+    "simulation",
+    "python",
+    "windows"
+  ],
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-mcp-client": ">=0.2.0-rc.1 <0.3.0-0"
+  },
+  "files": [
+    "lib/",
+    "mcp-server/",
+    "skills/",
+    "bin/",
+    "assets/",
+    "cordis.patch.yml",
+    "README.md",
+    "NOTICE.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "os": [
+    "win32"
+  ],
+  "displayName": "COMSOL Multiphysics",
+  "icon": "assets/icon.svg",
+  "bin": {
+    "dsh-comsol": "bin/dsh-comsol.mjs"
+  },
+  "scripts": {
+    "doctor": "node bin/dsh-comsol.mjs doctor",
+    "where": "node bin/dsh-comsol.mjs where"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-mcp-client": {
+      "optional": true
+    }
+  }
+}
