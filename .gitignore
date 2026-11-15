@@ -1,0 +1,29 @@
+# 参考/对照材料，不属于本插件，且含第三方源码，不入库
+_contract/
+
+# 依赖
+node_modules/
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 编辑/调试产生的备份
+*.bak
+*.bak-*
+*.bak2*
+*.bak-bom-*
+*.bak-merge*
+*.bak-nopanel-*
+*.orig
+*.rej
+
+# 本地运行产物
+~/.dsh/comsol.json
+*.log
+.DS_Store
+Thumbs.db
+
+# 截图与临时导出
+shots/
+*.tmp
