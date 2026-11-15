@@ -1,0 +1,18 @@
+# dsh-comsol bundle patch.
+#
+# Inserts one row: `dsh-comsol` -> lib/index.js. Resolves the local COMSOL
+# Multiphysics 6.4 installation and the MPh/JPype interpreter, prepares
+# ~/.dsh/comsol.json, installs the comsol skill, and registers one stdio MCP
+# server (serverName: comsol). COMSOL has no in-CAE plugin bridge to load: the
+# MCP server drives COMSOL through MPh (JPype -> comsolmphserver), so the server
+# must run under the MPh interpreter (layout.python), not a bare python.
+# The server advertises only search_tools + call_tool, so the full tool
+# catalogue does not sit in the context window.
+#
+# The project-dashboard panel (lib/workbench.js + client.js) was removed on
+# 2026-11-12. Two cordis rows executing one client bundle made the web boot fail
+# (duplicate factory registration, then import failed). Only the MCP row remains.
+
+- insert:
+    - id: dsh-comsol
+      name: 'dsh-comsol'
