@@ -27,6 +27,66 @@ import difflib
 
 TOOLS = [
     {
+        "name": "plane_fields_export",
+        "summary": "导出 COMSOL 解到 y=常数截面的场数据 npz（T/p/u/v/w/B/J/E/V/Ex/Ez/Fx/Fy/Fz），可选插值补洞把覆盖率提到 100%",
+        "args": "model_path*, out_dir*, times=0.5, plane_y=0, step_mm=0.5, fill=true",
+        "keywords": ["导出", "export", "截面", "plane", "场数据", "npz", "tecplot", "y=0", "覆盖率"],
+    },
+    {
+        "name": "add_jx_jz",
+        "summary": "由 |J| 与 Ex/Ez 反推电流密度分量 Jx/Jz（J=sigma*E），供流线/电流管使用",
+        "args": "npz_path*, out_npz",
+        "keywords": ["Jx", "Jz", "电流密度", "分量", "矢量", "sigma"],
+    },
+    {
+        "name": "current_tubes_plot",
+        "summary": "电流管守恒图：弧柱截面撒 n 条种子正向积分到出口，统计进出条数（进 n 出 n 即守恒）",
+        "args": "npz_path*, out_png*, n=20, inlet=31,26,28.9, count=x<2, step_mm=0.3, rotate",
+        "keywords": ["电流管", "守恒", "conservation", "流线", "streamline", "弧柱", "进出"],
+    },
+    {
+        "name": "current_tubes_multi",
+        "summary": "多时刻电流管图 2x2 面板，每个时刻自动定位弧柱核心并撒种子",
+        "args": "npz_dir*, out_png*, n=20, half_mm=1.2, xprobe_mm=31, count, labels, step_mm",
+        "keywords": ["多时刻", "电流管", "面板", "2x2", "演化", "守恒"],
+    },
+    {
+        "name": "tecplot_render",
+        "summary": "Tecplot 批处理渲染：生成宏 + tec360 -b，支持 contour/stream/vector 组合模式",
+        "args": "dat_dir*, out_dir*, mode=contour, width=1600, frame=4.20x7.25, dfmt",
+        "keywords": ["tecplot", "渲染", "云图", "流线", "矢量", "macro", "批处理"],
+    },
+    {
+        "name": "figure_style",
+        "summary": "图面后处理：裁坐标轴/顺时针90°/加纵向色标(Times New Roman)/白底/金属描黑线框",
+        "args": "src_png*, out_png*, crop_axes, rotate, colorbar_label, colorbar_min, colorbar_max, colorbar_ticks, white_bg, wireframe",
+        "keywords": ["后处理", "裁剪", "旋转", "色标", "colorbar", "白底", "线框", "出图"],
+    },
+    {
+        "name": "domain_series_multi",
+        "summary": "逐时刻取域/边界平均（逐索引钉死 solnum），用于栅片电位、触头电位等时间序列",
+        "args": "domains*, indices*, expression=V, unit, dataset, node_type",
+        "keywords": ["时间序列", "域平均", "栅片电位", "触头电位", "series", "solnum", "V"],
+    },
+    {
+        "name": "domain_average_series",
+        "summary": "按域取体平均并返回整条时间序列（每个域一个 AvVolume 节点，绕过算子限制）",
+        "args": "domains*, expression=mef.V, dataset, tag_prefix",
+        "keywords": ["域平均", "体平均", "电压", "电位", "栅片", "series", "时间序列", "AvVolume"],
+    },
+    {
+        "name": "cpl_average_create",
+        "summary": "创建组件平均算子(aveop)，用于取某个域/边界的体平均/面平均，如 aveop8(mef.V)",
+        "args": "tag*, entities*, component_name=comp1",
+        "keywords": ["average", "平均", "aveop", "算子", "operator", "域平均", "电位", "电压"],
+    },
+    {
+        "name": "study_set_genconv",
+        "summary": "开启研究的自动收敛图生成（必须在求解前设置），用于保存残差收敛曲线",
+        "args": "enabled=true, study_name, model_name",
+        "keywords": ["收敛图", "convergence", "genconv", "残差", "residual", "求解", "日志"],
+    },
+    {
         "name": "multiphysics_add_boundary",
         "summary": "在边界维度(edim=2)创建多物理场耦合，如平衡放电边界热源，并设边界选择",
         "args": "coupling_type*, boundaries*, tag, physics_list",
