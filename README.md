@@ -2,7 +2,7 @@
 
 把 **COMSOL Multiphysics 6.4** 接到 [DeepSeek Harness](https://github.com/deepseek-ai)（dsh）：
 插件加载时先探测本机 COMSOL 安装与 **MPh/JPype 解释器**，再注册一个 stdio MCP 服务端，
-用 **179 个工具**（渐进披露，只暴露 `search_tools` / `call_tool`）完成
+用 **199 个工具**（渐进披露，只暴露 `search_tools` / `call_tool`）完成
 “几何 → 物理场 → 多物理场耦合 → 网格 → 求解 → 后处理”，全程不离开对话。
 
 ![COMSOL](https://img.shields.io/badge/COMSOL-6.4-1f6feb)
@@ -41,6 +41,7 @@ GUI 桥接。**COMSOL 没有这种机制**，也不应该有：COMSOL 由 **MPh�
 | 操作系统 | Windows 10/11 |
 | COMSOL | **6.4**（`C:\Program Files\COMSOL\COMSOL64\Multiphysics`） |
 | MPh 解释器 | 任意 venv，`import mph` 与 `import jpype` 成功（本机：`E:\ICE\_tools\COMSOL_Multiphysics_MCP\.venv\Scripts\python.exe`，Python 3.11 + mph 1.4.0） |
+| **COMSOL MCP 工具包** | `E:\ICE\_tools\COMSOL_Multiphysics_MCP`（提供 19 个工具模块，含 `arc_figs` / `plot_export`）。路径可用环境变量 `DSH_COMSOL_PACKAGE_ROOT` 覆盖；缺包时 `handlers.py` 启动即报 `ModuleNotFoundError` |
 | dsh | 支持 `plugin_manager` / `dsh-mcp-client` 的版本 |
 | Node | 20+（dsh 自带运行时即可） |
 
@@ -194,7 +195,7 @@ model_list -> [gui_shared (API 建的), Untitled (GUI 的)]   ← 两个客户�
 |---|---|
 | **项目进度** | 扫描项目根目录，逐个模型文件夹列出模型（名称/大小/修改时间）、报告文件数、结果图数量 |
 | **结果图** | 导出图的缩略图墙，点开看大图（经 `/image` 路由，路径逃逸返回 404） |
-| **工具检索** | 用 `search_tools` 检索 179 个工具 |
+| **工具检索** | 用 `search_tools` 检索 199 个工具 |
 | **会话** | MCP 入口状态 + 温度 + 向当前会话下达指令的输入框 |
 
 头部实时显示 CPU 温度（≥85 °C 变橙色）。
@@ -205,7 +206,7 @@ model_list -> [gui_shared (API 建的), Untitled (GUI 的)]   ← 两个客户�
 > 工作台与 MCP 服务是**两个独立的插件行**：工作台需要 `webServer`/`tools`/`agents`，
 > 无头环境没有这些服务。拆开之后，无头环境仍能拿到 MCP 服务，而不是整个插件加载失败。
 
-MCP 服务端**只广告两个工具**，179 个工具的完整 schema 不进上下文（空闲会话约几百 token）：
+MCP 服务端**只广告两个工具**，199 个工具的完整 schema 不进上下文（空闲会话约几百 token）：
 
 ```
 search_tools(query, top_k)   →  按意图检索目录，返回精确工具名 + 一行说明 + 参数
