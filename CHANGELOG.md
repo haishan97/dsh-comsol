@@ -1,5 +1,41 @@
 # dsh-comsol 变更记录
 
+## 2026-11-19 · 注册 arc_figs 模块，新增 10 个电弧出图与后处理工具（189 → 199）
+
+### 背景
+电弧后处理是一条固定链路：**截面场数据导出 → Tecplot 云图 → 电流管守恒图 → 图面整形**。
+此前每次都要临时写脚本，散落在各次会话里，重复且不可复用。这批工具把整条链路固化成 MCP 工具。
+
+### 改动
+
+`mcp-server/handlers.py`
+
+1. `TOOL_MODULES` 增加 `"arc_figs"`，注册该模块的工具（实现在同机的 COMSOL MCP 包，
+   由 `DSH_COMSOL_PACKAGE_ROOT` 解析，本仓库不重复托管）
+
+`mcp-server/catalog.py`
+
+2. 目录新增 10 条，工具总数 **189 → 199**：
+
+| 工具 | 用途 |
+|---|---|
+| `plane_fields_export` | 导出 y=常数截面的场数据 npz（T/p/u/v/w/B/J/E/V/Ex/Ez/Fx/Fy/Fz），可插值补洞到 100% 覆盖 |
+| `add_jx_jz` | 由 \|J\| 与 Ex/Ez 反推电流密度分量 Jx/Jz（J=σE） |
+| `current_tubes_plot` | 电流管守恒图：弧柱截面撒种子正向积分到出口，统计进出条数 |
+| `current_tubes_multi` | 多时刻电流管 2×2 面板，每帧自动定位弧柱核心撒种子 |
+| `tecplot_render` | Tecplot 批处理渲染（生成宏 + `tec360 -b`，contour/stream/vector 组合） |
+| `figure_style` | 图面后处理：裁坐标轴 / 顺时针 90° / 纵向色标 / 白底 / 金属描黑线框 |
+| `domain_series_multi` | 逐时刻取域/边界平均（逐索引钉死 solnum），用于栅片电位、触头电位时间序列 |
+| `domain_average_series` | 按域取体平均并返回整条时间序列（每域一个 AvVolume 节点） |
+| `cpl_average_create` | 创建组件平均算子 `aveop`，用于 `aveop8(mef.V)` 这类体平均/面平均 |
+| `study_set_genconv` | 设置求解器的广义收敛（genconv） |
+
+### 同步
+
+README 里的工具数一并更新为 **199**（原文写 179，已落后于目录实际条目）。
+
+---
+
 ## 2026-11-15 · plot_set 支持 ArrowVolume 数值属性（箭头密度/比例）
 
 ### 问题
