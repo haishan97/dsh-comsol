@@ -129,6 +129,7 @@ TOOL_MODULES: tuple[str, ...] = (
     "repro",
     "verification",
     "plot_export",
+    "arc_figs",
 )
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
