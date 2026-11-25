@@ -27,6 +27,54 @@ import difflib
 
 TOOLS = [
     {
+        "name": "physics_add_child_feature",
+        "summary": "在父特征下建嵌套子特征（如 Terminal/Ground 是 MagneticInsulation 的子特征）",
+        "args": "physics_name*, parent_tag*, feature_type*, tag*, boundaries, properties",
+        "keywords": ["physics", "物理场", "子特征", "child", "Terminal", "Ground", "嵌套"],
+    },
+    {
+        "name": "mesh_set_hauto",
+        "summary": "设全局预定义网格尺寸等级 hauto（1 极细 … 9 极粗），改已有默认 size 特征而非新建",
+        "args": "mesh_name*, hauto=5",
+        "keywords": ["mesh", "网格", "hauto", "尺寸", "预定义", "全局", "size"],
+    },
+    {
+        "name": "geometry_feature_select",
+        "summary": "设置几何特征的选择集属性（input/input2 等；普通 set 会报「为选择」）",
+        "args": "feature_tag*, prop*, objects*, geometry_name, component_name",
+        "keywords": ["geometry", "几何", "选择", "selection", "input", "Array", "Difference", "Union"],
+    },
+    {
+        "name": "geometry_feature_props",
+        "summary": "列出几何特征的全部属性名与当前值（用于探测 CrossSection 等未知属性名）",
+        "args": "feature_tag*, geometry_name, component_name=comp1",
+        "keywords": ["geometry", "几何", "属性", "properties", "探测", "CrossSection", "剖面"],
+    },
+    {
+        "name": "geometry_add_polygon",
+        "summary": "按顶点表建 2D 多边形（正确传 double[][]，修掉 add_feature 顶点丢失的问题）",
+        "args": "points* ([[x,y],...]), geometry_name, component_name, feature_name, close",
+        "keywords": ["polygon", "多边形", "顶点", "table", "2D 几何", "轮廓"],
+    },
+    {
+        "name": "cpl_int_create",
+        "summary": "创建积分算子 intop（intop1(1) 取面积/体积，intop1(expr) 取积分），可配合 results_evaluate 出时间序列",
+        "args": "tag*, entities*, dim=2, component_name=comp1",
+        "keywords": ["intop", "积分", "integration", "面积分", "算子", "operator", "A_eff"],
+    },
+    {
+        "name": "mesh_bndlayer",
+        "summary": "给边界加各向异性边界层网格（只解析法向），比各向同性加密便宜约 10 倍",
+        "args": "mesh_name*, entities*, tag, nlayers=8, first_layer=20[um], stretch=1.2, tet_feature",
+        "keywords": ["mesh", "边界层", "boundary layer", "棱柱", "prism", "各向异性", "弧根", "bl"],
+    },
+    {
+        "name": "mesh_size_local",
+        "summary": "给网格的自由四面体特征加局部 Size（边界/域），用于弧根等关键区域加密",
+        "args": "mesh_name*, entities*, tag, dim=2, hmax=0.1[mm], hmin, hgrad, tet_feature",
+        "keywords": ["mesh", "网格", "加密", "局部", "size", "hmax", "弧根", "refine"],
+    },
+    {
         "name": "plane_fields_export",
         "summary": "导出 COMSOL 解到 y=常数截面的场数据 npz（T/p/u/v/w/B/J/E/V/Ex/Ez/Fx/Fy/Fz），可选插值补洞把覆盖率提到 100%",
         "args": "model_path*, out_dir*, times=0.5, plane_y=0, step_mm=0.5, fill=true",
@@ -89,7 +137,7 @@ TOOLS = [
     {
         "name": "multiphysics_add_boundary",
         "summary": "在边界维度(edim=2)创建多物理场耦合，如平衡放电边界热源，并设边界选择",
-        "args": "coupling_type*, boundaries*, tag, physics_list",
+        "args": "coupling_type*, boundaries*, tag, physics_list, edim=2（2D 模型边界要用 1）",
         "keywords": ["multiphysics", "多物理场", "边界", "boundary", "bphs", "平衡放电", "热源", "耦合"],
     },
     {
