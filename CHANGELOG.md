@@ -1,5 +1,46 @@
 # dsh-comsol 变更记录
 
+## 2026-11-25 · 补齐几何/网格/物理场的「写操作缺口」，新增 8 个工具（199 → 207）
+
+### 背景
+建模过程中反复被同一类问题卡住：**能读不能写**。比如 `geometry_add_feature` 传多边形顶点表会静默丢失顶点、
+`Terminal`/`Ground` 必须挂在 `MagneticInsulation` 下却没法建嵌套子特征、改网格尺寸只能删了重建。
+这批工具把 8 个缺口一次性补上。
+
+### 改动
+
+`mcp-server/catalog.py` 新增 8 条，工具总数 **199 → 207**：
+
+| 工具 | 解决的缺口 |
+|---|---|
+| `geometry_add_polygon` | 按顶点表建 2D 多边形。旧 `add_feature` 传顶点会丢失，这里正确构造 `double[][]` |
+| `geometry_feature_props` | 列出几何特征**全部**属性名与当前值，用于探测 `CrossSection` 这类未知属性名 |
+| `geometry_feature_select` | 设置几何特征的**选择集**属性（`input`/`input2`）；普通 `set` 会报「为选择」 |
+| `physics_add_child_feature` | 在父特征下建**嵌套子特征**（`Terminal`/`Ground` 是 `MagneticInsulation` 的子特征） |
+| `mesh_set_hauto` | 设全局预定义网格尺寸等级 `hauto`（1 极细 … 9 极粗），**改**已有默认 size 而非新建 |
+| `mesh_size_local` | 给自由四面体特征加**局部** Size（边界/域），用于弧根等关键区域加密 |
+| `mesh_bndlayer` | 各向异性**边界层**网格（只解析法向），比各向同性加密便宜约 10 倍 |
+| `cpl_int_create` | 创建**积分算子** `intop`（`intop1(1)` 取面积/体积，`intop1(expr)` 取积分） |
+
+### 实现位置
+`geometry_*` → `src/tools/geometry.py`；`physics_add_child_feature` → `physics.py`；
+`mesh_*` / `cpl_int_create` → `plot_export.py`（同机的 COMSOL MCP 包，由
+`DSH_COMSOL_PACKAGE_ROOT` 解析）。
+
+### 验证
+目录条目数与实际 `@mcp.tool` 实现数一致：
+
+```
+catalog 207   实现 207
+catalog 缺实现 (0): []
+实现未进目录 (0): []
+```
+
+### 同步
+README 工具数 199 → **207**。
+
+---
+
 ## 2026-11-19 · 注册 arc_figs 模块，新增 10 个电弧出图与后处理工具（189 → 199）
 
 ### 背景
